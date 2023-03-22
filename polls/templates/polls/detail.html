@@ -1,1 +1,17 @@
-{{ question }}
+<form action="{% url 'polls:vote' question.id %}" method="post">
+{% csrf_token %}
+{#    由于我们创建一个 POST 表单（它具有修改数据的作用），#}
+{#    所以我们需要小心跨站点请求伪造。#}
+{#    Django 自带了一个非常有用的防御系统。 #}
+{#    简而言之，所有针对内部 URL 的 POST 表单都应该使用 {% csrf_token %} 模板标签。#}
+<fieldset>
+    <legend><h1>{{ question.question_text }}</h1></legend>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    {% for choice in question.choice_set.all %}
+        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+        {#forloop.counter 指示 for 标签已经循环多少次。#}
+    {% endfor %}
+</fieldset>
+<input type="submit" value="Vote">
+</form>
